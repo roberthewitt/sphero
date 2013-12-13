@@ -31,11 +31,11 @@ public class LocatorActivity extends Activity {
     private SpheroConnectionView mSpheroConnectionView;
 
     /** Collision Parameters*/
-    int xt=160;
+    int xt=100;
     int xsp=0;
-    int yt=90;
+    int yt=100;
     int ysp=0;
-    int deadTime=50;
+    int deadTime=30;
 
     private float currentAngle = 0;
 
