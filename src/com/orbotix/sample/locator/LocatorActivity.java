@@ -6,9 +6,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.TextView;
 import orbotix.robot.base.*;
 import orbotix.robot.sensor.LocatorData;
 import orbotix.sphero.CollisionListener;
@@ -17,7 +14,8 @@ import orbotix.sphero.LocatorListener;
 import orbotix.sphero.Sphero;
 import orbotix.view.connection.SpheroConnectionView;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class LocatorActivity extends Activity {
@@ -36,25 +34,17 @@ public class LocatorActivity extends Activity {
     int ysp=0;
     int deadTime=100;
 
-    private float positionx;
-    private float positiony;
-    private float velocityx;
-    private float velocityy;
     private float currentAngle = 0;
 
     private Random randomGenerator;
-    private Map locationMap;
+    private List<CollisionLocatorData> locationList = new ArrayList<CollisionLocatorData>();
 
     private LocatorListener mLocatorListener = new LocatorListener() {
         @Override
         public void onLocatorChanged(LocatorData locatorData) {
             if (locatorData != null) {
                 Log.d(TAG, locatorData.toString());
-                positionx = locatorData.getPositionX();
-                positiony = locatorData.getPositionY();
-                velocityx = locatorData.getVelocityX();
-                velocityy = locatorData.getVelocityY();
-
+                locationList.add(new CollisionLocatorData(locatorData, false));
             }
         }
     };
@@ -102,7 +92,8 @@ public class LocatorActivity extends Activity {
     private final CollisionListener mCollisionListener = new CollisionListener() {
         public void collisionDetected(CollisionDetectedAsyncData collisionData) {
             // Do something with the collision data
-            Log.i("Sphero", "X,Y " + positionx + " , " + positiony);
+            Log.i("Sphero", "X,Y " + getLastLocatorData().getPositionX() + " , " + getLastLocatorData().getPositionY());
+            getLastCollisionLocationData().isCollision = true;
             mRobot.stop();
             turnAndDrive();
         }
@@ -132,7 +123,7 @@ public class LocatorActivity extends Activity {
     }
 
     public void stopMapping(View v) {
-        mRobot.drive(90, .6f);
+        mRobot.drive( 90, .6f );
     }
 
     private void turnAndDrive() {
@@ -144,11 +135,29 @@ public class LocatorActivity extends Activity {
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                if(velocityx <= 0.2f && velocityy <= 0.2f)
+                if(getLastLocatorData().getVelocityX() <= 0.2f && getLastLocatorData().getVelocityY() <= 0.2f)
                 currentAngle = randomGenerator.nextInt(359);
                 turnAndDrive();
                 startStuckHandler();
             }
         }, 3000);
+    }
+
+    private LocatorData getLastLocatorData() {
+        return getLastCollisionLocationData().locatorData;
+    }
+
+    private CollisionLocatorData getLastCollisionLocationData() {
+        return locationList.get(locationList.size() - 1);
+    }
+
+    private class CollisionLocatorData {
+        public LocatorData locatorData;
+        public boolean isCollision;
+
+        private CollisionLocatorData(LocatorData locatorData, boolean collision) {
+            this.locatorData = locatorData;
+            this.isCollision = collision;
+        }
     }
 }
