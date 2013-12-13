@@ -22,7 +22,6 @@ import java.util.Random;
 
 public class LocatorActivity extends Activity {
 
-
     private static final String TAG = "OBX-LocatorSample";
     /** Robot to from which we are streaming */
     private Sphero mRobot = null;
