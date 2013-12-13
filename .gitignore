@@ -1,0 +1,22 @@
+# Mac system files
+.DS_Store
+
+# IntelliJ IDEA project files
+.idea
+*.iml
+*.ipr
+*.iws
+classes/
+
+
+# Eclipse project files
+.project
+.classpath
+.settings/*
+
+# Temporary build directories
+gen/
+out/
+target/
+gen-external-apklibs/
+classes/
