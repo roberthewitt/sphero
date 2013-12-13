@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.TextView;
 import com.orbotix.sample.locator.mapping.CollisionLocatorData;
 import com.orbotix.sample.locator.mapping.LocationViewer;
 
@@ -21,6 +22,7 @@ public class MapView extends View implements LocationViewer {
     private final Paint travelled = new Paint();
     private final Paint collision = new Paint();
     private List<CollisionLocatorData> list;
+    private TextView distanceWalked;
 
     public MapView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -36,6 +38,11 @@ public class MapView extends View implements LocationViewer {
     }
 
     @Override
+    public void setWalkedDistanceView(TextView view) {
+        this.distanceWalked = view;
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
@@ -45,6 +52,7 @@ public class MapView extends View implements LocationViewer {
 
         final BoundingBoxInfo boxInfo = getBoundsOfPoints(list);
 //        Log.e("rob", String.format("boxMagnitude: x=%f, y=%f left=%f, top=%f", boxInfo.size.x, boxInfo.size.y, boxInfo.leftEdge, boxInfo.topEdge));
+        float iHaveWalked = 0;
 
         final int maxXScreenSize = canvas.getWidth();
         final int maxYScreenSize = canvas.getHeight();
@@ -65,6 +73,10 @@ public class MapView extends View implements LocationViewer {
 
             if (lastXCoord != Float.MAX_VALUE) {
                 canvas.drawLine(lastXCoord, lastYCoord, offsetPositionX, offsetPositionY, travelled);
+
+                final float absX = Math.abs(offsetPositionX - lastXCoord) / xRatio;
+                final float absY = Math.abs(offsetPositionY - lastYCoord) / yRatio;
+                iHaveWalked += Math.sqrt((absX * absX) +(absY * absY));
             }
             lastXCoord = offsetPositionX;
             lastYCoord = offsetPositionY;
@@ -75,6 +87,7 @@ public class MapView extends View implements LocationViewer {
                 canvas.drawRect(xCoord - 3, yCoord - 3, xCoord + 3, yCoord + 3, collision);
             }
         }
+        distanceWalked.setText(String.format("Distance Walked: %f cm", iHaveWalked));
     }
 
     private BoundingBoxInfo getBoundsOfPoints(List<CollisionLocatorData> points) {
