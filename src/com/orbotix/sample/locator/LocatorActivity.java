@@ -9,8 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.orbotix.sample.locator.mapping.CollisionLocatorData;
 import com.orbotix.sample.locator.mapping.LocationViewer;
-import orbotix.robot.base.CollisionDetectedAsyncData;
-import orbotix.robot.base.Robot;
+import orbotix.robot.base.*;
 import orbotix.robot.sensor.LocatorData;
 import orbotix.sphero.CollisionListener;
 import orbotix.sphero.ConnectionListener;
@@ -164,8 +163,9 @@ public class LocatorActivity extends Activity {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                if (getLastLocatorData().getVelocityX() <= 1.0f && getLastLocatorData().getVelocityY() <= 1.0f)
+                if (Math.abs(getLastLocatorData().getVelocityX()) <= 1.0f && Math.abs(getLastLocatorData().getVelocityY()) <= 1.0f) {
                     randomDrive();
+                }
                 if (!stoppingMapping) {
                     startStuckHandler();
                 }
