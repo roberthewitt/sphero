@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import com.orbotix.sample.locator.mapping.CollisionLocatorData;
+import com.orbotix.sample.locator.mapping.LocationViewer;
 import orbotix.robot.base.*;
 import orbotix.robot.sensor.LocatorData;
 import orbotix.sphero.CollisionListener;
@@ -40,6 +41,7 @@ public class LocatorActivity extends Activity {
 
     private Random randomGenerator;
     private List<CollisionLocatorData> locationList = new ArrayList<CollisionLocatorData>();
+    private LocationViewer locationViewer;
 
     private LocatorListener mLocatorListener = new LocatorListener() {
         @Override
@@ -47,6 +49,7 @@ public class LocatorActivity extends Activity {
             if (locatorData != null) {
                 Log.d(TAG, locatorData.toString());
                 locationList.add(new CollisionLocatorData(locatorData, false));
+                locationViewer.showFor(locationList);
             }
         }
     };
@@ -78,6 +81,7 @@ public class LocatorActivity extends Activity {
                 stopMapping();
             }
         });
+        locationViewer = (LocationViewer) findViewById(R.id.sphero_map_view);
 
         mSpheroConnectionView = (SpheroConnectionView) findViewById(R.id.sphero_connection_view);
         mSpheroConnectionView.setSingleSpheroMode(true);
