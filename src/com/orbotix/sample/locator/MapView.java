@@ -52,7 +52,7 @@ public class MapView extends View implements LocationViewer {
 
         final BoundingBoxInfo boxInfo = getBoxInfo(list);
 //        Log.e("rob", String.format("boxMagnitude: x=%f, y=%f left=%f, top=%f", boxInfo.size.x, boxInfo.size.y, boxInfo.leftEdge, boxInfo.topEdge));
-        float iHaveWalked = 1;
+        float iHaveWalked = 0;
 
         final int maxXScreenSize = canvas.getWidth();
         final int maxYScreenSize = canvas.getHeight();
@@ -60,22 +60,24 @@ public class MapView extends View implements LocationViewer {
         final float xRatio = ((float) maxXScreenSize) / boxInfo.size.x;
         final float yRatio = ((float) maxYScreenSize) / boxInfo.size.y;
 
+        final float ratioToUse = Math.min(xRatio, yRatio);
+
         float lastXCoord = Float.MAX_VALUE;
         float lastYCoord = Float.MAX_VALUE;
 
         for (CollisionLocatorData item : list) {
 
             float offsetPositionX = item.locatorData.getPositionX() - boxInfo.leftEdge;
-            offsetPositionX *= xRatio;
+            offsetPositionX *= ratioToUse;
 
             float offsetPositionY = item.locatorData.getPositionY() - boxInfo.topEdge;
-            offsetPositionY *= yRatio;
+            offsetPositionY *= ratioToUse;
 
             if (lastXCoord != Float.MAX_VALUE) {
                 canvas.drawLine(lastXCoord, lastYCoord, offsetPositionX, offsetPositionY, travelled);
 
-                final float absX = Math.abs(offsetPositionX - lastXCoord) / xRatio;
-                final float absY = Math.abs(offsetPositionY - lastYCoord) / yRatio;
+                final float absX = Math.abs(offsetPositionX - lastXCoord) / ratioToUse;
+                final float absY = Math.abs(offsetPositionY - lastYCoord) / ratioToUse;
                 iHaveWalked += Math.sqrt((absX * absX) + (absY * absY));
             }
 

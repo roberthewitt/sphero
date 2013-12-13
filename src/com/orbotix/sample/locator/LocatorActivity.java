@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import com.orbotix.sample.locator.mapping.CollisionLocatorData;
 import com.orbotix.sample.locator.mapping.LocationViewer;
-import orbotix.robot.base.*;
+import orbotix.robot.base.CollisionDetectedAsyncData;
+import orbotix.robot.base.Robot;
 import orbotix.robot.sensor.LocatorData;
 import orbotix.sphero.CollisionListener;
 import orbotix.sphero.ConnectionListener;
@@ -56,6 +58,32 @@ public class LocatorActivity extends Activity {
     private boolean stoppingMapping = false;
     private KotikanColors kotikanColors;
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        final MenuItem start = menu.add("start");
+        start.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        start.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                startMapping();
+                return true;
+            }
+        });
+
+        final MenuItem stop = menu.add("stop");
+        stop.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        stop.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                stopMapping();
+                return true;
+            }
+        });
+        return true;
+    }
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,22 +92,6 @@ public class LocatorActivity extends Activity {
 
         randomGenerator = new Random();
         currentAngle = randomGenerator.nextInt(359);
-
-        Button startButton = (Button) findViewById(R.id.start);
-        startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startMapping();
-            }
-        });
-
-        Button stopButton = (Button) findViewById(R.id.stop);
-        stopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stopMapping();
-            }
-        });
         locationViewer = (LocationViewer) findViewById(R.id.sphero_map_view);
         locationViewer.setWalkedDistanceView((TextView) findViewById(R.id.sphero_distance_walked));
 
