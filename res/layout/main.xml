@@ -5,17 +5,35 @@
     android:background="@android:color/white"
     android:orientation="vertical" >
 
-        <Button
-            android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Start"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:layout_margin="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"/>
+
+    <Button
+        android:id="@+id/stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Stop"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:layout_margin="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"/>
+
+    <com.orbotix.sample.locator.MapView
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="Start"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"
-            android:layout_margin="10dp"
-            android:layout_alignParentTop="true"/>
-
-
+            android:layout_width="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"/>
 
     <orbotix.view.connection.SpheroConnectionView
         android:id="@+id/sphero_connection_view"
