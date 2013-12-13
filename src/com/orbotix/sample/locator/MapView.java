@@ -50,7 +50,7 @@ public class MapView extends View implements LocationViewer {
             return;
         }
 
-        final BoundingBoxInfo boxInfo = getBoundsOfPoints(list);
+        final BoundingBoxInfo boxInfo = getBoxInfo(list);
 //        Log.e("rob", String.format("boxMagnitude: x=%f, y=%f left=%f, top=%f", boxInfo.size.x, boxInfo.size.y, boxInfo.leftEdge, boxInfo.topEdge));
         float iHaveWalked = 0;
 
@@ -76,21 +76,22 @@ public class MapView extends View implements LocationViewer {
 
                 final float absX = Math.abs(offsetPositionX - lastXCoord) / xRatio;
                 final float absY = Math.abs(offsetPositionY - lastYCoord) / yRatio;
-                iHaveWalked += Math.sqrt((absX * absX) +(absY * absY));
+                iHaveWalked += Math.sqrt((absX * absX) + (absY * absY));
             }
-            lastXCoord = offsetPositionX;
-            lastYCoord = offsetPositionY;
 
             if (item.isCollision) {
-                final int xCoord = (int) lastXCoord;
-                final int yCoord = (int) lastYCoord;
+                final int xCoord = (int) offsetPositionX;
+                final int yCoord = (int) offsetPositionY;
                 canvas.drawRect(xCoord - 3, yCoord - 3, xCoord + 3, yCoord + 3, collision);
             }
+
+            lastXCoord = offsetPositionX;
+            lastYCoord = offsetPositionY;
         }
         distanceWalked.setText(String.format("Distance Walked: %f cm", iHaveWalked));
     }
 
-    private BoundingBoxInfo getBoundsOfPoints(List<CollisionLocatorData> points) {
+    private BoundingBoxInfo getBoxInfo(List<CollisionLocatorData> points) {
         float maxX = 0f, maxY = 0f, minX = 0f, minY = 0f;
 
         for (CollisionLocatorData item : points) {
