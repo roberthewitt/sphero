@@ -22,6 +22,7 @@ import java.util.Random;
 
 public class LocatorActivity extends Activity {
 
+
     private static final String TAG = "OBX-LocatorSample";
     /** Robot to from which we are streaming */
     private Sphero mRobot = null;
@@ -30,11 +31,11 @@ public class LocatorActivity extends Activity {
     private SpheroConnectionView mSpheroConnectionView;
 
     /** Collision Parameters*/
-    int xt=200;
+    int xt=160;
     int xsp=0;
-    int yt=125;
+    int yt=90;
     int ysp=0;
-    int deadTime=100;
+    int deadTime=50;
 
     private float currentAngle = 0;
 
@@ -52,6 +53,9 @@ public class LocatorActivity extends Activity {
             }
         }
     };
+    private Handler handler;
+    private boolean stoppingMapping = false;
+    private KotikanColors kotikanColors;
 
     /** Called when the activity is first created. */
     @Override
@@ -63,7 +67,20 @@ public class LocatorActivity extends Activity {
         currentAngle = randomGenerator.nextInt(359);
 
         Button startButton = (Button) findViewById(R.id.start);
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startMapping();
+            }
+        });
+
         Button stopButton = (Button) findViewById(R.id.stop);
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stopMapping();
+            }
+        });
         locationViewer = (LocationViewer) findViewById(R.id.sphero_map_view);
 
         mSpheroConnectionView = (SpheroConnectionView) findViewById(R.id.sphero_connection_view);
@@ -79,7 +96,8 @@ public class LocatorActivity extends Activity {
                 mRobot.getSensorControl().setRate(5);
                 mRobot.getCollisionControl().startDetection(xt, xsp, yt, ysp, deadTime);
                 mRobot.getCollisionControl().addCollisionListener(mCollisionListener);
-                startStuckHandler();
+                kotikanColors = new KotikanColors();
+                kotikanColors.setNextColor(mRobot);
             }
 
             @Override
@@ -100,7 +118,8 @@ public class LocatorActivity extends Activity {
             Log.i("Sphero", "X,Y " + getLastLocatorData().getPositionX() + " , " + getLastLocatorData().getPositionY());
             getLastCollisionLocationData().isCollision = true;
             mRobot.stop();
-            turnAndDrive();
+            kotikanColors.setNextColor(mRobot);
+            randomDrive();
         }
     };
 
@@ -123,29 +142,34 @@ public class LocatorActivity extends Activity {
         }
     }
 
-    public void startMapping(View v) {
-        mRobot.drive(0, .6f);
+    public void startMapping() {
+        startStuckHandler();
+        stoppingMapping = false;
+        randomDrive();
     }
 
-    public void stopMapping(View v) {
-        mRobot.drive( 90, .6f );
+    public void stopMapping() {
+        mRobot.stop();
+        stoppingMapping = true;
     }
 
-    private void turnAndDrive() {
-        currentAngle = randomGenerator.nextInt(359);
+    private void randomDrive() {
+        currentAngle += (110 + randomGenerator.nextInt(50));
+        if(currentAngle >= 360) currentAngle -= 360;
         mRobot.drive(currentAngle, 0.6f);
     }
 
     private void startStuckHandler() {
-        final Handler handler = new Handler();
+        handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                if(getLastLocatorData().getVelocityX() <= 0.2f && getLastLocatorData().getVelocityY() <= 0.2f)
-                currentAngle = randomGenerator.nextInt(359);
-                turnAndDrive();
-                startStuckHandler();
+                if (getLastLocatorData().getVelocityX() <= 1.0f && getLastLocatorData().getVelocityY() <= 1.0f)
+                randomDrive();
+                if(!stoppingMapping) {
+                    startStuckHandler();
+                }
             }
-        }, 3000);
+        }, 1000);
     }
 
     private LocatorData getLastLocatorData() {
