@@ -163,7 +163,9 @@ public class LocatorActivity extends Activity {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                if (Math.abs(getLastLocatorData().getVelocityX()) <= 1.0f && Math.abs(getLastLocatorData().getVelocityY()) <= 1.0f) {
+                final LocatorData lastLocatorData = getLastLocatorData();
+                if (Math.abs(lastLocatorData.getVelocityX()) <= 1.0f && Math.abs(lastLocatorData.getVelocityY()) <= 1.0f) {
+                    Log.i("Sphero", String.format("Stuck handler triggered with velocity (%f.4,%.4f)", lastLocatorData.getVelocityX(), lastLocatorData.getVelocityY()));
                     randomDrive();
                 }
                 if (!stoppingMapping) {
