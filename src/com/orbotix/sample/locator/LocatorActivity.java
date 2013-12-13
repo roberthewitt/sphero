@@ -6,9 +6,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.TextView;
 import orbotix.robot.base.*;
 import orbotix.robot.sensor.LocatorData;
 import orbotix.sphero.CollisionListener;
@@ -17,7 +14,7 @@ import orbotix.sphero.LocatorListener;
 import orbotix.sphero.Sphero;
 import orbotix.view.connection.SpheroConnectionView;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Random;
 
 public class LocatorActivity extends Activity {
@@ -43,7 +40,7 @@ public class LocatorActivity extends Activity {
     private float currentAngle = 0;
 
     private Random randomGenerator;
-    private Map locationMap;
+    private List locationList;
 
     private LocatorListener mLocatorListener = new LocatorListener() {
         @Override
@@ -58,6 +55,8 @@ public class LocatorActivity extends Activity {
             }
         }
     };
+    private Handler handler;
+    private boolean stoppingMapping = false;
 
     /** Called when the activity is first created. */
     @Override
@@ -69,7 +68,20 @@ public class LocatorActivity extends Activity {
         currentAngle = randomGenerator.nextInt(359);
 
         Button startButton = (Button) findViewById(R.id.start);
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startMapping();
+            }
+        });
+
         Button stopButton = (Button) findViewById(R.id.stop);
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stopMapping();
+            }
+        });
 
         mSpheroConnectionView = (SpheroConnectionView) findViewById(R.id.sphero_connection_view);
         mSpheroConnectionView.setSingleSpheroMode(true);
@@ -104,7 +116,7 @@ public class LocatorActivity extends Activity {
             // Do something with the collision data
             Log.i("Sphero", "X,Y " + positionx + " , " + positiony);
             mRobot.stop();
-            turnAndDrive();
+            randomDrive();
         }
     };
 
@@ -127,27 +139,31 @@ public class LocatorActivity extends Activity {
         }
     }
 
-    public void startMapping(View v) {
-        mRobot.drive(0, .6f);
+    public void startMapping() {
+        stoppingMapping = false;
+        randomDrive();
     }
 
-    public void stopMapping(View v) {
-        mRobot.drive(90, .6f);
+    public void stopMapping() {
+        mRobot.stop();
+        stoppingMapping = true;
     }
 
-    private void turnAndDrive() {
+    private void randomDrive() {
         currentAngle = randomGenerator.nextInt(359);
         mRobot.drive(currentAngle, 0.6f);
     }
 
     private void startStuckHandler() {
-        final Handler handler = new Handler();
+        handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                if(velocityx <= 0.2f && velocityy <= 0.2f)
-                currentAngle = randomGenerator.nextInt(359);
-                turnAndDrive();
-                startStuckHandler();
+                if (velocityx <= 0.2f && velocityy <= 0.2f)
+                    currentAngle = randomGenerator.nextInt(359);
+                randomDrive();
+                if(!stoppingMapping) {
+                    startStuckHandler();
+                }
             }
         }, 3000);
     }
