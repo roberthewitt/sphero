@@ -52,7 +52,7 @@ public class MapView extends View implements LocationViewer {
 
         final BoundingBoxInfo boxInfo = getBoxInfo(list);
 //        Log.e("rob", String.format("boxMagnitude: x=%f, y=%f left=%f, top=%f", boxInfo.size.x, boxInfo.size.y, boxInfo.leftEdge, boxInfo.topEdge));
-        float iHaveWalked = 0;
+        float iHaveWalked = 1;
 
         final int maxXScreenSize = canvas.getWidth();
         final int maxYScreenSize = canvas.getHeight();
@@ -88,7 +88,7 @@ public class MapView extends View implements LocationViewer {
             lastXCoord = offsetPositionX;
             lastYCoord = offsetPositionY;
         }
-        distanceWalked.setText(String.format("Distance Walked: %f cm", iHaveWalked));
+        distanceWalked.setText(String.format("Distance Rolled: %.2f meters", iHaveWalked / 100));
     }
 
     private BoundingBoxInfo getBoxInfo(List<CollisionLocatorData> points) {

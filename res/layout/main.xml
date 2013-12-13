@@ -52,7 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:text="distance walked: xxx"
+        android:text="distance Rolled: 0 meters"
         android:textColor="@android:color/black"
         android:textSize="20sp"
         android:layout_alignParentBottom="true"
