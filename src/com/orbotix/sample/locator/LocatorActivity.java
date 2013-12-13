@@ -163,9 +163,10 @@ public class LocatorActivity extends Activity {
         handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                if (getLastLocatorData().getVelocityX() <= 1.0f && getLastLocatorData().getVelocityY() <= 1.0f)
-                randomDrive();
-                if(!stoppingMapping) {
+                if (Math.abs(getLastLocatorData().getVelocityX()) <= 1.0f && Math.abs(getLastLocatorData().getVelocityY()) <= 1.0f) {
+                    randomDrive();
+                }
+                if (!stoppingMapping) {
                     startStuckHandler();
                 }
             }
