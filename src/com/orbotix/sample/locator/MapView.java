@@ -26,7 +26,7 @@ public class MapView extends View implements LocationViewer {
         super(context, attrs);
         travelled.setColor(Color.BLACK);
         travelled.setAntiAlias(true);
-        collision.setColor(Color.rgb(255,0,0));
+        collision.setColor(Color.rgb(255, 0, 0));
     }
 
     @Override
@@ -44,6 +44,7 @@ public class MapView extends View implements LocationViewer {
         }
 
         final BoundingBoxInfo boxInfo = getBoundsOfPoints(list);
+//        Log.e("rob", String.format("boxMagnitude: x=%f, y=%f left=%f, top=%f", boxInfo.size.x, boxInfo.size.y, boxInfo.leftEdge, boxInfo.topEdge));
 
         final int maxXScreenSize = canvas.getWidth();
         final int maxYScreenSize = canvas.getHeight();
@@ -56,9 +57,10 @@ public class MapView extends View implements LocationViewer {
 
         for (CollisionLocatorData item : list) {
 
-            float offsetPositionX = item.locatorData.getPositionX() + boxInfo.leftEdge;
-            float offsetPositionY = item.locatorData.getPositionY() + boxInfo.topEdge;
+            float offsetPositionX = item.locatorData.getPositionX() - boxInfo.leftEdge;
             offsetPositionX *= xRatio;
+
+            float offsetPositionY = item.locatorData.getPositionY() - boxInfo.topEdge;
             offsetPositionY *= yRatio;
 
             if (lastXCoord != Float.MAX_VALUE) {
@@ -77,6 +79,7 @@ public class MapView extends View implements LocationViewer {
 
     private BoundingBoxInfo getBoundsOfPoints(List<CollisionLocatorData> points) {
         float maxX = 0f, maxY = 0f, minX = 0f, minY = 0f;
+
         for (CollisionLocatorData item : points) {
             final float positionX = item.locatorData.getPositionX();
             final float positionY = item.locatorData.getPositionY();
