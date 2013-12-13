@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import com.orbotix.sample.locator.mapping.CollisionLocatorData;
 import com.orbotix.sample.locator.mapping.LocationViewer;
 import orbotix.robot.base.*;
@@ -21,7 +22,6 @@ import java.util.List;
 import java.util.Random;
 
 public class LocatorActivity extends Activity {
-
 
     private static final String TAG = "OBX-LocatorSample";
     /** Robot to from which we are streaming */
@@ -53,7 +53,6 @@ public class LocatorActivity extends Activity {
             }
         }
     };
-    private Handler handler;
     private boolean stoppingMapping = false;
     private KotikanColors kotikanColors;
 
@@ -82,6 +81,7 @@ public class LocatorActivity extends Activity {
             }
         });
         locationViewer = (LocationViewer) findViewById(R.id.sphero_map_view);
+        locationViewer.setWalkedDistanceView((TextView) findViewById(R.id.sphero_distance_walked));
 
         mSpheroConnectionView = (SpheroConnectionView) findViewById(R.id.sphero_connection_view);
         mSpheroConnectionView.setSingleSpheroMode(true);
@@ -160,7 +160,7 @@ public class LocatorActivity extends Activity {
     }
 
     private void startStuckHandler() {
-        handler = new Handler();
+        Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
                 if (Math.abs(getLastLocatorData().getVelocityX()) <= 1.0f && Math.abs(getLastLocatorData().getVelocityY()) <= 1.0f) {

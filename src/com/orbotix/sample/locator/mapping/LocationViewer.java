@@ -1,5 +1,7 @@
 package com.orbotix.sample.locator.mapping;
 
+import android.widget.TextView;
+
 import java.util.List;
 
 /**
@@ -10,5 +12,7 @@ import java.util.List;
 public interface LocationViewer {
 
     public void showFor(List<CollisionLocatorData> dataList);
+
+    public void setWalkedDistanceView(TextView view);
 
 }

@@ -13,6 +13,7 @@
         android:padding="10dp"
         android:text="Start"
         android:textColor="@android:color/black"
+        android:background="#A0000000"
         android:textSize="20sp"
         android:layout_margin="20dp"
         android:layout_alignParentTop="true"
@@ -24,6 +25,7 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:text="Stop"
+        android:background="#A0000000"
         android:textColor="@android:color/black"
         android:textSize="20sp"
         android:layout_margin="20dp"
@@ -34,13 +36,27 @@
         android:id="@+id/sphero_connection_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFF"/>
+        android:background="#FFF"
+        android:visibility="gone"
+        />
 
     <com.orbotix.sample.locator.MapView
         android:id="@+id/sphero_map_view"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:layout_centerHorizontal="true"
+        />
+
+    <TextView
+        android:id="@+id/sphero_distance_walked"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="distance walked: xxx"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
         />
 
 </RelativeLayout>
