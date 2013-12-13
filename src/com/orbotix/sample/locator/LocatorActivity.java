@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import com.orbotix.sample.locator.mapping.CollisionLocatorData;
 import orbotix.robot.base.*;
 import orbotix.robot.sensor.LocatorData;
 import orbotix.sphero.CollisionListener;
@@ -151,13 +152,4 @@ public class LocatorActivity extends Activity {
         return locationList.get(locationList.size() - 1);
     }
 
-    private class CollisionLocatorData {
-        public LocatorData locatorData;
-        public boolean isCollision;
-
-        private CollisionLocatorData(LocatorData locatorData, boolean collision) {
-            this.locatorData = locatorData;
-            this.isCollision = collision;
-        }
-    }
 }
