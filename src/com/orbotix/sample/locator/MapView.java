@@ -18,12 +18,15 @@ import java.util.List;
  */
 public class MapView extends View implements LocationViewer {
 
-    private final Paint paint = new Paint();
+    private final Paint travelled = new Paint();
+    private final Paint collision = new Paint();
     private List<CollisionLocatorData> list;
 
     public MapView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        paint.setColor(Color.BLACK);
+        travelled.setColor(Color.BLACK);
+        travelled.setAntiAlias(true);
+        collision.setColor(Color.rgb(255,0,0));
     }
 
     @Override
@@ -42,20 +45,33 @@ public class MapView extends View implements LocationViewer {
 
         final BoundingBoxInfo boxInfo = getBoundsOfPoints(list);
 
-        final int maxXScreenSize = canvas.getMaximumBitmapWidth();
-        final int maxYScreenSize = canvas.getMaximumBitmapHeight();
+        final int maxXScreenSize = canvas.getWidth();
+        final int maxYScreenSize = canvas.getHeight();
 
         final float xRatio = ((float) maxXScreenSize) / boxInfo.size.x;
         final float yRatio = ((float) maxYScreenSize) / boxInfo.size.y;
 
+        float lastXCoord = Float.MAX_VALUE;
+        float lastYCoord = Float.MAX_VALUE;
+
         for (CollisionLocatorData item : list) {
+
             float offsetPositionX = item.locatorData.getPositionX() + boxInfo.leftEdge;
             float offsetPositionY = item.locatorData.getPositionY() + boxInfo.topEdge;
-
             offsetPositionX *= xRatio;
             offsetPositionY *= yRatio;
 
-            canvas.drawPoint(offsetPositionX, offsetPositionY, paint);
+            if (lastXCoord != Float.MAX_VALUE) {
+                canvas.drawLine(lastXCoord, lastYCoord, offsetPositionX, offsetPositionY, travelled);
+            }
+            lastXCoord = offsetPositionX;
+            lastYCoord = offsetPositionY;
+
+            if (item.isCollision) {
+                final int xCoord = (int) lastXCoord;
+                final int yCoord = (int) lastYCoord;
+                canvas.drawRect(xCoord - 3, yCoord - 3, xCoord + 3, yCoord + 3, collision);
+            }
         }
     }
 
