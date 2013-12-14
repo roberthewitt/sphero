@@ -11,6 +11,8 @@
     <application android:label="@string/app_name">
         <activity
             android:name=".LocatorActivity"
+            android:icon="@drawable/icon"
+            android:logo="@drawable/logo"
             android:label="@string/app_name"
             android:configChanges="orientation|keyboard|keyboardHidden"
             android:screenOrientation="portrait"

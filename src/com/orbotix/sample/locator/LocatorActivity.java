@@ -1,5 +1,6 @@
 package com.orbotix.sample.locator;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -141,6 +142,11 @@ public class LocatorActivity extends Activity {
         super.onResume();
         // Refresh list of Spheros
         mSpheroConnectionView.startDiscovery();
+
+        final ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("");
+        }
     }
 
     /** Called when the user presses the back or home button */
